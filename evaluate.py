@@ -5,22 +5,18 @@
     python evaluate.py
 
 환경변수 (.env 파일):
-    PROVIDER               - 프로바이더 선택: closedrouter (기본) | direct
-    CLOSEDROUTER_BASE_URL  - ClosedRouter 게이트웨이 URL (PROVIDER=closedrouter)
-    CLOSEDROUTER_API_KEY   - invoke 토큰 (PROVIDER=closedrouter)
-    ANTHROPIC_API_KEY      - Anthropic 공식 API 키 (PROVIDER=direct, Claude 모델)
-    OPENAI_API_KEY         - OpenAI 공식 API 키 (PROVIDER=direct, GPT 모델)
-    EVAL_MODEL             - 평가용 모델 (기본: claude-sonnet-4-5-20250929)
-    GENERATION_MODEL       - 요약 생성용 모델
+    ANTHROPIC_API_KEY  - Anthropic API 키
+    EVAL_MODEL         - 평가용 모델 (기본: claude-sonnet-4-5-20250929)
+    GENERATION_MODEL   - 요약 생성용 모델 (기본: claude-sonnet-4-5-20250929)
 """
 
 import os
 import sys
 from collections import defaultdict
 
+from deepeval.models import AnthropicModel
 from dotenv import load_dotenv
 
-from closedrouter_provider import create_model
 from golden_dataset import load_golden_dataset
 from metrics import create_metrics
 
@@ -76,11 +72,11 @@ def generate_summary(
 
 
 def run_evaluation():
-    eval_model = create_model(
-        model_name=os.environ.get("EVAL_MODEL", "claude-sonnet-4-5-20250929"),
+    eval_model = AnthropicModel(
+        model=os.environ.get("EVAL_MODEL", "claude-sonnet-4-5-20250929"),
     )
-    gen_model = create_model(
-        model_name=os.environ.get("GENERATION_MODEL", "claude-sonnet-4-5-20250929"),
+    gen_model = AnthropicModel(
+        model=os.environ.get("GENERATION_MODEL", "claude-sonnet-4-5-20250929"),
     )
 
     dataset = load_golden_dataset()

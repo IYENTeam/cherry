@@ -12,16 +12,14 @@ G-Eval 기반 커스텀 메트릭: "좋은 요약문"의 기준을 정의.
 from deepeval.metrics import GEval
 from deepeval.test_case import SingleTurnParams
 
-from deepeval.models import DeepEvalBaseLLM
-
-from closedrouter_provider import create_model
+from deepeval.models import AnthropicModel, DeepEvalBaseLLM
 
 
 def create_metrics(
     model: DeepEvalBaseLLM | None = None,
     threshold: float = 0.7,
 ) -> list[GEval]:
-    model = model or create_model()
+    model = model or AnthropicModel()
 
     params = [
         SingleTurnParams.INPUT,
